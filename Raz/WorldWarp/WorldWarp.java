@@ -172,6 +172,7 @@ public class WorldWarp extends JavaPlugin
 	              getConfig().set("worlds." + n + ".seed", seed);
 	              getConfig().set("worlds." + n + ".pvp", pvp);
 	              getConfig().set("worlds." + n + ".difficulty", diff);
+	              
 	              this.saveConfig();
 	            }
 	            

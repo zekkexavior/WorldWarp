@@ -10,7 +10,7 @@ commands:
     usage: /<command>    
   wflag:
     description: Set PVP / Difficulty in world.
-    usage: /<command> [name] <-pvp on/off> <-difficulty peacefull/easy/normal/hard>
+    usage: /<command> [name] -flags
   wwarp:
     description: Warp to worlds
     usage: /<command> [name]  
