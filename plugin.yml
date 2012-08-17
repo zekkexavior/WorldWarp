@@ -1,0 +1,41 @@
+name: WorldWarp
+main: Raz.WorldWarp.WorldWarp
+version: 3.1
+commands:
+  wcreate:
+    description: Creates a new world
+    usage: /<command> [name] [environmate] <seed>
+  wlist:
+    description: List worlds
+    usage: /<command>    
+  wflag:
+    description: Set PVP / Difficulty in world.
+    usage: /<command> [name] <-pvp on/off> <-difficulty peacefull/easy/normal/hard>
+  wwarp:
+    description: Warp to worlds
+    usage: /<command> [name]  
+  wdelete:
+    description: Delete worlds
+    usage: /<command> [name]     
+  wimport:
+    description: Import worlds
+    usage: /<command> [name]       
+permissions:
+    WorldWarp.wcreate:
+        description: Allows you to create a world
+        default: false
+    WorldWarp.wflag:
+        description: Allows you to flag a world
+        default: false
+    WorldWarp.wdelete:
+        description: Allows you to delete a world
+        default: false
+    WorldWarp.wwarp:
+        description: Allows you to warp to a world
+        default: false
+    WorldWarp.wlist:
+        description: Allows you to list worlds
+        default: false
+    WorldWarp.wimport:
+        description: Allows you to import worlds
+        default: false        
