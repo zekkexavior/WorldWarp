@@ -39,7 +39,7 @@ public class WorldWarp extends JavaPlugin
 		} catch (IOException e) {
 			log.warning("[WorldWarp] IOException occured. Try to remove WorldWarp Folder.");
 		}
-		loadWorlds();
+		
 		log.info("[WorldWarp] Enabled! Running 3.0");	
 		ConsoleCommandSender console = getServer().getConsoleSender();
 		console.sendMessage(ChatColor.GREEN + " _  _  _             _     _ _  _  _                   ");
@@ -52,6 +52,7 @@ public class WorldWarp extends JavaPlugin
 		if(!setMetric()){
 			log.warning("[WorldWarp]: Can't create Metrics.");
 		}
+		loadWorlds();
 
 	}
 	public boolean setMetric(){
@@ -137,11 +138,18 @@ public class WorldWarp extends JavaPlugin
 
 		for(Object lWorld : worldNames){
 			counter++;
-			String label = lWorld.toString();		
-			AddWorldGraph(getServer().getWorld(label).getEnvironment().name());
+			String label = lWorld.toString();	
 			getServer().createWorld(new WorldCreator(label));
-			getServer().getWorld(label).setPVP(getConfig().getBoolean("worlds." + label + ".pvp"));
-			getServer().getWorld(label).setDifficulty(Difficulty.valueOf(getConfig().getString("worlds." + label + ".difficulty").toUpperCase()));
+			AddWorldGraph(getServer().getWorld(label).getEnvironment().name());
+			getServer().getWorld(label).setPVP(getConfig().getBoolean("worlds." + label + ".pvp"));	
+			if(getConfig().contains("worlds." + label + ".difficulty")){
+				getServer().getWorld(label).setDifficulty(Difficulty.valueOf(getConfig().getString("worlds." + label + ".difficulty").toUpperCase()));
+			}else{
+				getConfig().set("worlds." + label  + ".difficulty", "EASY");
+				getServer().getWorld(label).setDifficulty(Difficulty.EASY);
+				this.saveConfig();
+				
+			}
 			log.info("[WorldWarp] Loading: "+label+" : "+counter+"/"+worldNames.length );
 		}
 	}

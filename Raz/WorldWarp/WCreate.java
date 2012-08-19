@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import Raz.WorldWarp.WorldWarp;
 import Raz.WorldGenerators.Flatlands;
-import Raz.WorldGenerators.Skylands;
+
 
 public class WCreate {
 
@@ -43,9 +43,6 @@ public class WCreate {
 						}
 						if(args[1].equalsIgnoreCase("FLATLANDS")){
 							World.generator(new Flatlands("16"));
-							World.environment(Environment.valueOf("NORMAL"));
-						}else if(args[1].equalsIgnoreCase("SKYLANDS") || args[1].equalsIgnoreCase("SKYLAND")){
-							World.generator(new Skylands());
 							World.environment(Environment.valueOf("NORMAL"));
 						}else{
 							World.environment(Environment.valueOf(args[1].toUpperCase()));
