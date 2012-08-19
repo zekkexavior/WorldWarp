@@ -9,12 +9,13 @@ import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
+import Raz.WorldWarp.WorldWarp;
 import Raz.WorldGenerators.Flatlands;
+import Raz.WorldGenerators.Skylands;
 
 public class WCreate {
 
-	public WCreate(Player player, String[] args, FileConfiguration config,Server server) {
+	public WCreate(Player player, String[] args, FileConfiguration config, Server server) {
 		if(args.length < 2){
 			player.sendMessage(ChatColor.RED + "[WorldWarp]: Use: /Wcreate [name] [environment] <seed>");
 		}else{
@@ -25,94 +26,99 @@ public class WCreate {
 				if(new File(worldname + "/level.dat").exists()){
 					player.sendMessage(ChatColor.RED + "[WorldWarp]: A world by that name seems to exist. Try /wimport "+worldname);
 				}else{
-				if ((args[1].equalsIgnoreCase("NETHER")) || (args[1].equalsIgnoreCase("THE_END")) || (args[1].equalsIgnoreCase("NORMAL") || (args[1].equalsIgnoreCase("FLATLANDS")))){
-				WorldCreator World = WorldCreator.name(worldname);
-				
-				 Long Seed = null;
-				 if (args.length > 2) {
-					  if(!args[2].startsWith("-")){
-				        if (isInt(args[2]))
-				          Seed = Long.valueOf(args[2]);
-				        else {
-				          Seed = Long.valueOf(args[2].hashCode());
-				        }
-				      }
-				 }
-				 if(Seed != null){
-					 World.seed(Seed);
-				 }
-				 if(args[1].equalsIgnoreCase("FLATLANDS")){
-					 World.generator(new Flatlands("16"));
-					 World.environment(Environment.valueOf("NORMAL"));
-				 }else{
-					 World.environment(Environment.valueOf(args[1].toUpperCase()));
-				 }
-				 player.sendMessage(ChatColor.RED + "[WorldWarp]: " + ChatColor.DARK_GREEN + "Generating world: " + worldname);
-				 server.getWorld(worldname).setPVP(false);	
-				 server.getWorld(worldname).setDifficulty(Difficulty.PEACEFUL);
-				  if(isFlag("-nopvp",args)){
-					  server.getWorld(worldname).setPVP(false);
-				  }
-				  if(isFlag("-pvp",args)){
-					  server.getWorld(worldname).setPVP(true);
-				  }
-				  if(isFlag("-peaceful",args)){
-					  server.getWorld(worldname).setDifficulty(Difficulty.PEACEFUL);
-				  }
-				  if(isFlag("-easy",args)){
-					  server.getWorld(worldname).setDifficulty(Difficulty.EASY);
-				  }
-				  if(isFlag("-normal",args)){
-					  server.getWorld(worldname).setDifficulty(Difficulty.NORMAL);
-					
-				  }
-				  if(isFlag("-hard",args)){
-					  server.getWorld(worldname).setDifficulty(Difficulty.HARD);
-				
-				  }
-				      String n = server.getWorld(worldname).getName();
-		              String Env = server.getWorld(worldname).getEnvironment().name();
-		              Long seed = Long.valueOf(server.getWorld(worldname).getSeed());
-		              boolean pvp = server.getWorld(worldname).getPVP();
-		              String diff = server.getWorld(worldname).getDifficulty().name();
-		              config.set("worlds." + n + ".name", n);
-		              config.set("worlds." + n + ".environmate", Env);
-		              config.set("worlds." + n + ".seed", seed);
-		              config.set("worlds." + n + ".pvp", pvp);
-		              config.set("worlds." + n + ".difficulty", diff);
-				 
-				 player.sendMessage(ChatColor.RED + "[WorldWarp]: " + ChatColor.YELLOW + "Done generating " + worldname);
-		
-				
-			}else{
-				player.sendMessage(ChatColor.RED + "[WorldWarp]: You can only create: NORMAL/NETHER/THE_END");
-			}
-			}
+					if ((args[1].equalsIgnoreCase("NETHER")) || (args[1].equalsIgnoreCase("THE_END")) || (args[1].equalsIgnoreCase("NORMAL") || (args[1].equalsIgnoreCase("FLATLANDS")))){
+						WorldCreator World = WorldCreator.name(worldname);
+						Long Seed = null;
+						if (args.length > 2) {
+							if(!args[2].startsWith("-")){
+								if (isInt(args[2]))
+									Seed = Long.valueOf(args[2]);
+								else {
+									Seed = Long.valueOf(args[2].hashCode());
+								}
+							}
+						}
+						if(Seed != null){
+							World.seed(Seed);
+						}
+						if(args[1].equalsIgnoreCase("FLATLANDS")){
+							World.generator(new Flatlands("16"));
+							World.environment(Environment.valueOf("NORMAL"));
+						}else if(args[1].equalsIgnoreCase("SKYLANDS") || args[1].equalsIgnoreCase("SKYLAND")){
+							World.generator(new Skylands());
+							World.environment(Environment.valueOf("NORMAL"));
+						}else{
+							World.environment(Environment.valueOf(args[1].toUpperCase()));
+						}
+						player.sendMessage(ChatColor.RED + "[WorldWarp]: " + ChatColor.DARK_GREEN + "Generating world: " + worldname);
+						World.createWorld();
+						server.getWorld(worldname).setPVP(false);	
+						server.getWorld(worldname).setDifficulty(Difficulty.PEACEFUL);
+						if(isFlag("-nopvp",args)){
+							server.getWorld(worldname).setPVP(false);
+						}
+						if(isFlag("-pvp",args)){
+							server.getWorld(worldname).setPVP(true);
+						}
+						if(isFlag("-peaceful",args)){
+							server.getWorld(worldname).setDifficulty(Difficulty.PEACEFUL);
+						}
+						if(isFlag("-easy",args)){
+							server.getWorld(worldname).setDifficulty(Difficulty.EASY);
+						}
+						if(isFlag("-normal",args)){
+							server.getWorld(worldname).setDifficulty(Difficulty.NORMAL);
+
+						}
+						if(isFlag("-hard",args)){
+							server.getWorld(worldname).setDifficulty(Difficulty.HARD);
+						}
+
+						String n = server.getWorld(worldname).getName();
+						String Env = server.getWorld(worldname).getEnvironment().name();
+						Long seed = Long.valueOf(server.getWorld(worldname).getSeed());
+						boolean pvp = server.getWorld(worldname).getPVP();
+						String diff = server.getWorld(worldname).getDifficulty().name();
+						new WorldWarp().AddWorldGraph(Env);
+						config.set("worlds." + n + ".name", n);
+						config.set("worlds." + n + ".environmate", Env);
+						config.set("worlds." + n + ".seed", seed);
+						config.set("worlds." + n + ".pvp", pvp);
+						config.set("worlds." + n + ".difficulty", diff);
+
+						player.sendMessage(ChatColor.RED + "[WorldWarp]: " + ChatColor.YELLOW + "Done generating " + worldname);
+
+
+					}else{
+						player.sendMessage(ChatColor.RED + "[WorldWarp]: You can only create: NORMAL/NETHER/THE_END/FLATLANDS");
+					}
+				}
 			}
 		}
 	}
-	public boolean isFlag(String flag, String[] args)
-	  {
-	    
-	    try {
-	      for (String s : args) {
-	        if (s.equalsIgnoreCase(flag)) {
-	          return true;
-	        }
-	        
-	      }
-	    } catch (IndexOutOfBoundsException e) {
-	    }
-	    return false;
-	  }
 
-	  public boolean isInt(String num)
-	  {
-	    try {
-	      Integer.parseInt(num);
-	    } catch (NumberFormatException nfe) {
-	      return false;
-	    }
-	    return true;
-	  }
+	public boolean isFlag(String flag, String[] args)
+	{
+
+		try {
+			for (String s : args) {
+				if (s.equalsIgnoreCase(flag)) {
+					return true;
+				}
+
+			}
+		} catch (IndexOutOfBoundsException e) {
+		}
+		return false;
+	}
+
+	public boolean isInt(String num)
+	{
+		try {
+			Integer.parseInt(num);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
+	}
 }

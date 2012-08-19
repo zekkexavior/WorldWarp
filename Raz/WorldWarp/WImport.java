@@ -18,12 +18,13 @@ public class WImport {
 			player.sendMessage(ChatColor.RED + "[WorldWarp]: That world is already active.");
 		}else{
 			if(new File(worldname + "/level.dat").exists()){
-				server.createWorld(new WorldCreator(worldname));
+				  server.createWorld(new WorldCreator(worldname));
 			      String n = server.getWorld(worldname).getName();
 	              String Env = server.getWorld(worldname).getEnvironment().name();
 	              Long seed = Long.valueOf(server.getWorld(worldname).getSeed());;	  
 	              boolean pvp = server.getWorld(worldname).getPVP();
 	              String diff = server.getWorld(worldname).getDifficulty().name();
+	              new WorldWarp().AddWorldGraph(Env);
 	              config.set("worlds." + n + ".name", n);
 	              config.set("worlds." + n + ".environmate", Env);
 	              config.set("worlds." + n + ".seed", seed);

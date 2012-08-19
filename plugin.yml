@@ -1,6 +1,6 @@
 name: WorldWarp
 main: Raz.WorldWarp.WorldWarp
-version: 3.1
+version: 3.2
 commands:
   wcreate:
     description: Creates a new world
@@ -16,7 +16,7 @@ commands:
     usage: /<command> [name]  
   wdelete:
     description: Delete worlds
-    usage: /<command> [name]     
+    usage: /<command> [name] -flags     
   wimport:
     description: Import worlds
     usage: /<command> [name]       
