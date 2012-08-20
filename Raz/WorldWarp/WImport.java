@@ -6,6 +6,7 @@ import org.bukkit.Server;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.mcstats.WWTrack;
 
 public class WImport {
 
@@ -24,7 +25,17 @@ public class WImport {
 	              Long seed = Long.valueOf(server.getWorld(worldname).getSeed());;	  
 	              boolean pvp = server.getWorld(worldname).getPVP();
 	              String diff = server.getWorld(worldname).getDifficulty().name();
-	              new WorldWarp().AddWorldGraph(Env);
+	          	
+					if(server.getWorld(worldname).getEnvironment().toString().equalsIgnoreCase("NORMAL")){
+						WWTrack.worldLoadsN.increment();
+					}
+					if(server.getWorld(worldname).getEnvironment().toString().equalsIgnoreCase("NETHER")){
+						WWTrack.worldLoadsNE.increment();
+					}
+					if(server.getWorld(worldname).getEnvironment().toString().equalsIgnoreCase("THE_END")){
+						WWTrack.worldLoadsT.increment();
+					}
+				
 	              config.set("worlds." + n + ".name", n);
 	              config.set("worlds." + n + ".environmate", Env);
 	              config.set("worlds." + n + ".seed", seed);

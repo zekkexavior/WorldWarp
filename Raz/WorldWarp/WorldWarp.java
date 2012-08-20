@@ -17,9 +17,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
-
+import org.mcstats.WWTrack;
 import Raz.WorldGenerators.Flatlands;
 
 
@@ -28,8 +26,6 @@ public class WorldWarp extends JavaPlugin
 
 
 	private static final Logger log = Logger.getLogger("Minecraft");
-	public Metrics Metric;
-
 	public void onEnable() {
 
 		try {
@@ -49,22 +45,11 @@ public class WorldWarp extends JavaPlugin
 		console.sendMessage(ChatColor.GREEN + "| |___| | |_| | |   | ( (_| | |___| ( ( | | |   | | | |");
 		console.sendMessage(ChatColor.GREEN + " \\______|\\___/|_|   |_|\\____|\\______|\\_||_|_|   | ||_/ ");
 		console.sendMessage(ChatColor.GREEN + "                                                |_|    ");
-		if(!setMetric()){
-			log.warning("[WorldWarp]: Can't create Metrics.");
-		}
+        WWTrack.init(this);
 		loadWorlds();
 
 	}
-	public boolean setMetric(){
-		try {
-			this.Metric = new Metrics(this);
-			this.Metric.start();
-			return true;
 
-		} catch (IOException e) {
-			return false;
-		}
-	}
 	public ChunkGenerator getDefaultWorldGenerator(String worldName, String id)
 	{
 		return new Flatlands("16");
@@ -79,7 +64,6 @@ public class WorldWarp extends JavaPlugin
 		Player player = (Player) sender;
 		if(hasPerm(player,label)){
 			FileConfiguration config = getConfig();
-			AddCommandGraph(label);
 
 			if(label.equalsIgnoreCase("wlist")){
 				new WList(player,config);
@@ -140,7 +124,17 @@ public class WorldWarp extends JavaPlugin
 			counter++;
 			String label = lWorld.toString();	
 			getServer().createWorld(new WorldCreator(label));
-			AddWorldGraph(getServer().getWorld(label).getEnvironment().name());
+			
+				if(getServer().getWorld(label).getEnvironment().toString().equalsIgnoreCase("NORMAL")){
+					WWTrack.worldLoadsN.increment();
+				}
+				if(getServer().getWorld(label).getEnvironment().toString().equalsIgnoreCase("NETHER")){
+					WWTrack.worldLoadsNE.increment();
+				}
+				if(getServer().getWorld(label).getEnvironment().toString().equalsIgnoreCase("THE_END")){
+					WWTrack.worldLoadsT.increment();
+				}
+			
 			getServer().getWorld(label).setPVP(getConfig().getBoolean("worlds." + label + ".pvp"));	
 			if(getConfig().contains("worlds." + label + ".difficulty")){
 				getServer().getWorld(label).setDifficulty(Difficulty.valueOf(getConfig().getString("worlds." + label + ".difficulty").toUpperCase()));
@@ -154,23 +148,7 @@ public class WorldWarp extends JavaPlugin
 		}
 	}
 
-	public void AddCommandGraph(String label) {
-		Graph commanduse = this.Metric.createGraph("Commands");
-		commanduse.addPlotter(new Metrics.Plotter(label) {
-			public int getValue() {
-				return 1;
-			}
-		});
-	}
-	public void AddWorldGraph(String ev) {
-		Graph worldloads = this.Metric.createGraph("Loaded Worlds");
-		worldloads.addPlotter(new Metrics.Plotter(ev) {
-			public int getValue() {
-				return 1;
-			}
-		});
-
-	}
+	
 	public void checkFiles() throws FileNotFoundException, IOException{
 
 		getConfig().options().copyDefaults();

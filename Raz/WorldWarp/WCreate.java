@@ -5,11 +5,13 @@ import java.io.File;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.Server;
+
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import Raz.WorldWarp.WorldWarp;
+import org.mcstats.WWTrack;
+
 import Raz.WorldGenerators.Flatlands;
 
 
@@ -70,13 +72,22 @@ public class WCreate {
 						if(isFlag("-hard",args)){
 							server.getWorld(worldname).setDifficulty(Difficulty.HARD);
 						}
-
+						
+							if(server.getWorld(worldname).getEnvironment().toString().equalsIgnoreCase("NORMAL")){
+								WWTrack.worldLoadsN.increment();
+							}
+							if(server.getWorld(worldname).getEnvironment().toString().equalsIgnoreCase("NETHER")){
+								WWTrack.worldLoadsNE.increment();
+							}
+							if(server.getWorld(worldname).getEnvironment().toString().equalsIgnoreCase("THE_END")){
+								WWTrack.worldLoadsT.increment();
+							}
+						
 						String n = server.getWorld(worldname).getName();
 						String Env = server.getWorld(worldname).getEnvironment().name();
 						Long seed = Long.valueOf(server.getWorld(worldname).getSeed());
 						boolean pvp = server.getWorld(worldname).getPVP();
 						String diff = server.getWorld(worldname).getDifficulty().name();
-						new WorldWarp().AddWorldGraph(Env);
 						config.set("worlds." + n + ".name", n);
 						config.set("worlds." + n + ".environmate", Env);
 						config.set("worlds." + n + ".seed", seed);
