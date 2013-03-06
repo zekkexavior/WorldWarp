@@ -1,6 +1,6 @@
 name: WorldWarp
 main: Raz.WorldWarp.WorldWarp
-version: 3.2
+version: 3.3
 commands:
   wcreate:
     description: Creates a new world
@@ -20,6 +20,9 @@ commands:
   wimport:
     description: Import worlds
     usage: /<command> [name]       
+  wback:
+    description: Go back to last known position
+    usage: /<command>
 permissions:
     WorldWarp.wcreate:
         description: Allows you to create a world
@@ -39,3 +42,6 @@ permissions:
     WorldWarp.wimport:
         description: Allows you to import worlds
         default: false        
+    WorldWarp.wback:
+        description: Allows you to go back
+        default: false     

@@ -7,7 +7,8 @@ import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
 
 public class Flatlands extends ChunkGenerator
-{
+{	
+	
 	private int Height;
 	
 	public Flatlands(String id)

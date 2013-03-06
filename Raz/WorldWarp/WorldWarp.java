@@ -1,13 +1,18 @@
 package Raz.WorldWarp;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
 
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
@@ -24,10 +29,19 @@ import Raz.WorldGenerators.Flatlands;
 public class WorldWarp extends JavaPlugin
 { 
 
-
+	public static HashMap<Player, Location> LastLocation = new HashMap<Player, Location>();
 	private static final Logger log = Logger.getLogger("Minecraft");
+	public static String version = "3.3";
 	public void onEnable() {
-
+		ConsoleCommandSender console = getServer().getConsoleSender();
+		try {
+			if(!checkVersion()){
+				console.sendMessage(ChatColor.RED + "[WARNING]: There is a new version of WorldWarp available at dev.bukkit.org");
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			checkFiles();
 		} catch (FileNotFoundException e) {
@@ -36,8 +50,8 @@ public class WorldWarp extends JavaPlugin
 			log.warning("[WorldWarp] IOException occured. Try to remove WorldWarp Folder.");
 		}
 		
-		log.info("[WorldWarp] Enabled! Running 3.0");	
-		ConsoleCommandSender console = getServer().getConsoleSender();
+		log.info("[WorldWarp] Enabled! Running 3.3");	
+		
 		console.sendMessage(ChatColor.GREEN + " _  _  _             _     _ _  _  _                   ");
 		console.sendMessage(ChatColor.GREEN + "| || || |           | |   | | || || |                  ");
 		console.sendMessage(ChatColor.GREEN + "| || || | ___   ____| | _ | | || || | ____  ____ ____  ");
@@ -48,6 +62,18 @@ public class WorldWarp extends JavaPlugin
         WWTrack.init(this);
 		loadWorlds();
 
+	}	
+	public boolean checkVersion() throws IOException{
+		URL versionurl = new URL("http://www.skoltrott.net/worldwarp_version.txt");
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(versionurl.openStream()));
+
+        String inputLine;
+        while ((inputLine = in.readLine()) != null)
+           if(inputLine.equalsIgnoreCase(WorldWarp.version)){
+        	   return true;
+           }
+		return false;
 	}
 
 	public ChunkGenerator getDefaultWorldGenerator(String worldName, String id)
@@ -70,6 +96,9 @@ public class WorldWarp extends JavaPlugin
 			}
 			if(label.equalsIgnoreCase("wwarp")){
 				new WWarp(player,args,config);
+			}
+			if(label.equalsIgnoreCase("wback")){
+				new WBack(player,args,config);
 			}
 			if(label.equalsIgnoreCase("wcreate")){
 				new WCreate(player,args,config,getServer());
@@ -122,9 +151,13 @@ public class WorldWarp extends JavaPlugin
 
 		for(Object lWorld : worldNames){
 			counter++;
-			String label = lWorld.toString();	
+			String label = lWorld.toString();
+			if(getConfig().getBoolean("worlds." + label + ".flatlands",false)){
+				getServer().createWorld(new WorldCreator(label).generator(new Flatlands("16")));
+			}else{
 			getServer().createWorld(new WorldCreator(label));
-			
+			}
+		
 				if(getServer().getWorld(label).getEnvironment().toString().equalsIgnoreCase("NORMAL")){
 					WWTrack.worldLoadsN.increment();
 				}
@@ -173,7 +206,7 @@ public class WorldWarp extends JavaPlugin
 				getConfig().set("worlds." + n + ".seed", seed);
 				getConfig().set("worlds." + n + ".pvp", pvp);
 				getConfig().set("worlds." + n + ".difficulty", diff);
-
+				WorldWarp.LastLocation.clear();
 				this.saveConfig();
 			}
 

@@ -28,6 +28,7 @@ public class WCreate {
 				if(new File(worldname + "/level.dat").exists()){
 					player.sendMessage(ChatColor.RED + "[WorldWarp]: A world by that name seems to exist. Try /wimport "+worldname);
 				}else{
+					int isFlat = 0;
 					if ((args[1].equalsIgnoreCase("NETHER")) || (args[1].equalsIgnoreCase("THE_END")) || (args[1].equalsIgnoreCase("NORMAL") || (args[1].equalsIgnoreCase("FLATLANDS")))){
 						WorldCreator World = WorldCreator.name(worldname);
 						Long Seed = null;
@@ -44,8 +45,10 @@ public class WCreate {
 							World.seed(Seed);
 						}
 						if(args[1].equalsIgnoreCase("FLATLANDS")){
+							isFlat = 1;
 							World.generator(new Flatlands("16"));
 							World.environment(Environment.valueOf("NORMAL"));
+							
 						}else{
 							World.environment(Environment.valueOf(args[1].toUpperCase()));
 						}
@@ -67,7 +70,6 @@ public class WCreate {
 						}
 						if(isFlag("-normal",args)){
 							server.getWorld(worldname).setDifficulty(Difficulty.NORMAL);
-
 						}
 						if(isFlag("-hard",args)){
 							server.getWorld(worldname).setDifficulty(Difficulty.HARD);
@@ -88,6 +90,9 @@ public class WCreate {
 						Long seed = Long.valueOf(server.getWorld(worldname).getSeed());
 						boolean pvp = server.getWorld(worldname).getPVP();
 						String diff = server.getWorld(worldname).getDifficulty().name();
+						if(isFlat == 1){
+							config.set("worlds." + n + ".flatlands",true);
+						}
 						config.set("worlds." + n + ".name", n);
 						config.set("worlds." + n + ".environmate", Env);
 						config.set("worlds." + n + ".seed", seed);

@@ -17,8 +17,11 @@ public class WWarp
 		if(config.contains("worlds." + args[0])){
 
 			if (p.getServer().getWorld(args[0]) != null) {
+				Location last = p.getLocation();
 				Location loc = p.getServer().getWorld(args[0]).getSpawnLocation();
 				p.teleport(loc);
+				WorldWarp.LastLocation.remove(p);
+				WorldWarp.LastLocation.put(p, last);
 				p.sendMessage(ChatColor.RED + "[WorldWarp]: " + ChatColor.GREEN + "Welcome to " + args[0]);
 				return;
 			}
