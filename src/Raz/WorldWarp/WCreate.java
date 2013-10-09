@@ -84,7 +84,6 @@ public class WCreate {
 							if(server.getWorld(worldname).getEnvironment().toString().equalsIgnoreCase("THE_END")){
 								WWTrack.worldLoadsT.increment();
 							}
-						
 						String n = server.getWorld(worldname).getName();
 						String Env = server.getWorld(worldname).getEnvironment().name();
 						Long seed = Long.valueOf(server.getWorld(worldname).getSeed());

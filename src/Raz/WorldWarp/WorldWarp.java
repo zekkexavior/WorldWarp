@@ -31,16 +31,17 @@ public class WorldWarp extends JavaPlugin
 
 	public static HashMap<Player, Location> LastLocation = new HashMap<Player, Location>();
 	private static final Logger log = Logger.getLogger("Minecraft");
-	public static String version = "3.3";
+	public static String version = "3.5";
 	public void onEnable() {
 		ConsoleCommandSender console = getServer().getConsoleSender();
+		if(getConfig().getBoolean("Settings.checkForUpdates")){
 		try {
 			if(!checkVersion()){
 				console.sendMessage(ChatColor.RED + "[WARNING]: There is a new version of WorldWarp available at dev.bukkit.org");
 			}
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			console.sendMessage(ChatColor.DARK_PURPLE + "[NOTICE]: WorldWarp can not communicate with the version server, new update may be available at dev.bukkit.org");
+		}
 		}
 		try {
 			checkFiles();
@@ -50,7 +51,7 @@ public class WorldWarp extends JavaPlugin
 			log.warning("[WorldWarp] IOException occured. Try to remove WorldWarp Folder.");
 		}
 		
-		log.info("[WorldWarp] Enabled! Running 3.3");	
+		log.info("[WorldWarp] Enabled! Running 3.6");	
 		
 		console.sendMessage(ChatColor.GREEN + " _  _  _             _     _ _  _  _                   ");
 		console.sendMessage(ChatColor.GREEN + "| || || |           | |   | | || || |                  ");
@@ -186,8 +187,13 @@ public class WorldWarp extends JavaPlugin
 
 		getConfig().options().copyDefaults();
 		this.saveConfig();
+		if(!getConfig().contains("Settings.checkForUpdates")){
+			getConfig().set("Settings.checkForUpdates", true);
+			this.saveConfig();
+		}
 		if(!getConfig().contains("Settings")){
 			getConfig().set("Settings.permissions.use", true);
+
 			this.saveConfig();
 		}
 		if(!getConfig().contains("worlds")){

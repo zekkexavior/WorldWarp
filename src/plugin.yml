@@ -1,6 +1,6 @@
 name: WorldWarp
 main: Raz.WorldWarp.WorldWarp
-version: 3.3
+version: 3.6
 commands:
   wcreate:
     description: Creates a new world
