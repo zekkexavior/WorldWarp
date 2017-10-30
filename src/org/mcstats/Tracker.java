@@ -1,3 +1,5 @@
+// MANE
+
 package org.mcstats;
 
 public class Tracker extends Metrics.Plotter {
